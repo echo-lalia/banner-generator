@@ -9,7 +9,9 @@
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 ```
 
-Simple code comment banner generator for visually dividing long scripts.
+Simple (self-contained, only imports 'argparse') code comment banner generator for visually dividing long scripts.
+
+Also has a bit of potentially useful code for dynamically cutting up ascii fonts into discrete characters.
 
 ```
 usage: bannergenerator.py [-h] [-w WIDTH] [--title_case] [--plain_case] [-H H_CHAR] [-v V_CHAR] [--no_comment] text
