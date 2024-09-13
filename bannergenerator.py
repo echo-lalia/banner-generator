@@ -1,7 +1,16 @@
+r"""Simple Banner Generator
+
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|           __    _   ,  , ,  ,  __  __       __   __ ,  ,  __  __    _   ___  __   __  .          |
+|          |__)  /_\  |\ | |\ | |_  |__)     /  _ |_  |\ | |_  |__)  /_\   |  /  \ |__) |          |
+|          |__) /   \ | \| | \| |__ | \_     \__) |__ | \| |__ | \_ /   \  |  \__/ | \_ !          |
+|                                                                                       °          |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Banner Generator! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+"""
+
 import argparse
-
-
-
 
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 # |                                         __  __  ,  , ___                                       |
@@ -14,23 +23,23 @@ import argparse
 
 height = 3
 raw_font = {
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ':r'''
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ":r"""
   _    __   __   _    __  __  __  _  _ ___   _         ,   , ,  ,  __   __   __   __   __  ___ .  . _  _               ___ 
  /_\  |__) /  ` |  \ |_  |_  /  _ |__|  |    | |_/ |   |\_/| |\ | /  \ |__) /  \ |__) (__`  |  |  | \  / | . | \_/ \_/  _/ 
 /   \ |__) \__, |__/ |__ |   \__) |  | _|_ \_/ | \ |__ |   | | \| \__/ |    \__\ | \_ .__)  |  |__|  \/  |/ \| / \  |  /__,
-''',
-'abcdefghijklmnopqrstuvwxyz':r'''
+""",
+"abcdefghijklmnopqrstuvwxyz":r"""
                       _                 ╮                                                      
  __╮ |_   _   _|  _  /_  _, |_  °  ° ╮, | ,  ,  _   _  ,_   _,  ,_  _ _|_             ╮,    _  
 (_/| |_) (_, (_| (/, |  (_| | | |  | |\ | |\/| | | (_) |_) (_|  |  _\  |  (_| \/ |/\| /\ |/ /_ 
                         ._/       /                    j     |,                          /     
-''',
-',.!"_-':r'''
-    | ||         
+""",
+',.!"_-':r"""
+    . ||         
     |         ___
-    o    ____    
-/ °              
-''',
+    !    ____    
+/ ° °            
+""",
 }
 
 
@@ -45,18 +54,25 @@ raw_font = {
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 
 class BigChar:
-    def __init__(self, lines):
+    """BigChar stores multi-line char as a list of strings."""
+
+    def __init__(self, lines:list):
+        """Create a BigChar.
+
+        `lines` should be a list of strings,
+        representing a single multi-line character.
+        """
         self.width = len(max(lines, key=len))
         # pad line endings
         for idx, line in enumerate(lines):
             if len(line) < self.width:
-                lines[idx] = line + (' ' * (self.width - len(line)))
+                lines[idx] = line + (" " * (self.width - len(line)))
         self.lines = lines
         self.height = len(lines)
-    
+
     def __repr__(self):
         string = "\n".join(self.lines)
-        return f'BigChar<\n{string}\n>'
+        return f"BigChar<\n{string}\n>"
 
 
 
@@ -70,13 +86,17 @@ class BigChar:
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 
 class BigFont:
+    """A container for BigChars, which can convert a string to a big string."""
+
     def __init__(self):
+        """Create a BigFont with only a single space character."""
         self.chars = {}
         # add space as a default char
-        self.add_char(' ', [' '])
+        self.add_char(" ", [" "])
         self.height = 1
 
-    def __getitem__(self, key):
+
+    def __getitem__(self, key:str) -> BigChar:
         # somewhat fuzzy matching so displaying varied text is easier:
         if key in self.chars:
             return self.chars[key]
@@ -84,52 +104,72 @@ class BigFont:
             return self.chars[key.lower()]
         if key.upper() in self.chars:
             return self.chars[key.upper()]
-        return self.chars[' ']
+        return self.chars[" "]
 
-    def __setitem__(self, key, val):
+
+    def __setitem__(self, key:str, val:BigChar):
         self.chars[key] = val
-    
-    def render_text(self, text:str, char_sep=' ', wide_space=2, clean_empty=False) -> str:
+
+
+    def render_text(self, text:str, *, char_sep:str=" ", wide_space:int=2, clean_empty:bool=False) -> str:
+        """Convert a given string into a multiline "BigChar" string.
+
+        Args:
+        - text:
+            A string to make into a big string.
+
+        Kwargs:
+        - char_sep:
+            A character to add between all characters. Defaults to " " to space out letters more.
+        - wide_space:
+            The number of times to repeat spaces in the output text.
+        - clean_empty:
+            Whether or not to remove empty first/last lines before returning.
+        """
         if wide_space > 1:
-            text = text.replace(' ', ' '*wide_space)
+            text = text.replace(" ", " " * wide_space)
         if char_sep:
             # separate characters by the given separator
             text = char_sep.join(list(text))
 
-        big_line = [''] * self.height
+        big_line = [""] * self.height
         for char in text:
             big_char = self[char]
             char_lines = big_char.lines
-            for idx, line in enumerate(big_line):
+            for idx, _line in enumerate(big_line):
                 if idx < len(char_lines):
                     big_line[idx] += char_lines[idx]
                 else:
                     # pad line with spaces
-                    big_line[idx] += ' '*big_char.width
+                    big_line[idx] += " " * big_char.width
         if clean_empty:
             if big_line[0].isspace():
                 big_line.pop(0)
             if big_line[-1].isspace():
                 big_line.pop(-1)
-        return '\n'.join(big_line)
+        return "\n".join(big_line)
 
-    def set_height(self):
+
+    def _set_height(self):
         self.height = max(char.height for char in self.chars.values())
-    
-    def add_char(self, char, lines):
-        '''Add one char to font, where lines is a list of string representing a multiline character.'''
+
+
+    def add_char(self, char:str, lines:list[str]):
+        """Add one char to font, where lines is a list of string representing a multiline character."""
         self.chars[char] = BigChar(lines)
 
-    def bulk_add_chars(self, chars, lines):
-        '''
-        Add multiple chars at once. 
-        "chars" must be a string containing one or more chars,
-        "lines" must be a list of strings containing matching multiline characters, separated by spaces.
-        '''
-        # for testing. Make sure the lines are going in right
-        assert all([len(line) == len(lines[0]) for line in lines])
+
+    def bulk_add_chars(self, chars:str, lines:list[str]):
+        """Add multiple chars at once.
+
+        Args:
+        - chars:
+            A string containing one or more chars
+        - lines:
+            A list of strings containing matching multiline characters, separated by spaces.
+        """
         # add a space to each line, to make finding the final char easier
-        lines = [line + ' ' for line in lines]
+        lines = [line + " " for line in lines]
         # iterate over each char
         for char in chars:
             idx = 0
@@ -140,7 +180,7 @@ class BigFont:
                     # split char lines off of source lines
                     char_lines = [line[:idx] for line in lines]
                     lines = [line[idx:] for line in lines]
-                    # ascii_char = '\n'.join(char_lines)
+
                     self[char] = BigChar(char_lines)
 
                     # clean starting spaces in multiline for next char
@@ -148,7 +188,7 @@ class BigFont:
                         lines = [line[1:] for line in lines]
                     break
                 idx += 1
-        self.set_height()
+        self._set_height()
 
 
 # process font chars
@@ -171,15 +211,15 @@ for key, val in raw_font.items():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("text", help="The text to use in the banner")
-    parser.add_argument("-w", '--width', help="The width of the banner", type=int, default=100)
-    parser.add_argument('--title_case', help='enable title case', action='store_true')
-    parser.add_argument('--plain_case', help='Dont modify the case from the input.', action='store_true')
-    parser.add_argument('-H', '--h_char', help='Char to use for the horizontal bars', default='~')
-    parser.add_argument('-v', '--v_char', help='Char to use for the vertical bars', default='|')
-    parser.add_argument('--no_comment', help='disable "#" at the start of the lines', action='store_true')
+    parser.add_argument("-w", "--width", help="The width of the banner", type=int, default=100)
+    parser.add_argument("--title_case", help="enable title case", action="store_true")
+    parser.add_argument("--plain_case", help="Dont modify the case from the input.", action="store_true")
+    parser.add_argument("-H", "--h_char", help="Char to use for the horizontal bars", default="~")
+    parser.add_argument("-v", "--v_char", help="Char to use for the vertical bars", default="|")
+    parser.add_argument("--no_comment", help='disable "#" at the start of the lines', action="store_true")
 
     args = parser.parse_args()
-    
+
     width = args.width
     use_comment = not args.no_comment
     use_title = args.title_case
@@ -195,39 +235,39 @@ if __name__ == "__main__":
         text = text.title()
     elif not plain_case:
         text = text.upper()
-    
+
     big_line = font.render_text(text)
     # account for lines too long
     if len(big_line[0]) > width:
-        big_line = font.render_text(text, char_sep='')
+        big_line = font.render_text(text, char_sep="")
     if len(big_line[0]) > width:
-        big_line = font.render_text(text, char_sep='', wide_space=1)
-    
+        big_line = font.render_text(text, char_sep="", wide_space=1)
+
     big_line = big_line.splitlines()
     # pad big line on left/right
     line_len = len(big_line[0])
     additional_width = width - line_len
     additional_right = additional_width // 2
     additional_left = additional_width - additional_right
-    big_line = [(' ' * additional_left) + line + (' ' * additional_right) for line in big_line]
+    big_line = [(" " * additional_left) + line + (" " * additional_right) for line in big_line]
 
 
     # add horizontal lines to top and bottom
     hline = (h_char * width)
 
     # add searchable annotation below
-    small_text = ' ' + args.text + ' '
+    small_text = " " + args.text + " "
     additional_width = width - len(small_text)
     additional_right = additional_width // 2
     additional_left = additional_width - additional_right
     small_text = h_char * additional_left + small_text + h_char * additional_right
-    
-    big_line = [hline] + big_line + [hline, small_text, hline]
-    
+
+    big_line = [hline, *big_line, hline, small_text, hline]
+
 
     # add left/right bars
     big_line = [v_char + line + v_char for line in big_line]
     if use_comment:
-        big_line = ['# ' + line for line in big_line]
+        big_line = ["# " + line for line in big_line]
 
-    print('\n'.join(big_line))
+    print("\n".join(big_line))
