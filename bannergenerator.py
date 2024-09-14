@@ -21,27 +21,81 @@ import argparse
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 
-height = 3
-raw_font = {
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ":r"""
-  _    __   __   _    __  __  __  _  _ ___   _         ,   , ,  ,  __   __   __   __   __  ___ .  . _  _               ___ 
- /_\  |__) /  ` |  \ |_  |_  /  _ |__|  |    | |_/ |   |\_/| |\ | /  \ |__) /  \ |__) (__`  |  |  | \  / | . | \_/ \_/  _/ 
+
+big_font = { # height == 2 (caps) 4 total
+'ABCDEFGHIJKLMNOPQRSTUVWXYZ':r"""
+  _    __   __   _    __  __  __  _  _ ___   _         ,   , ,  ,  __   __   __   __   __  ___ .  . _  _               ___
+ /_\  |__) /  ` |  \ |_  |_  /  _ |__|  |    | |_/ |   |\_/| |\ | /  \ |__) /  \ |__) (__`  |  |  | \  / | . | \_/ \_/  _/
 /   \ |__) \__, |__/ |__ |   \__) |  | _|_ \_/ | \ |__ |   | | \| \__/ |    \__\ | \_ .__)  |  |__|  \/  |/ \| / \  |  /__,
-""",
-"abcdefghijklmnopqrstuvwxyz":r"""
-                      _                 ╮                                                      
- __╮ |_   _   _|  _  /_  _, |_  °  ° ╮, | ,  ,  _   _  ,_   _,  ,_  _ _|_             ╮,    _  
-(_/| |_) (_, (_| (/, |  (_| | | |  | |\ | |\/| | | (_) |_) (_|  |  _\  |  (_| \/ |/\| /\ |/ /_ 
-                        ._/       /                    j     |,                          /     
+""",  # noqa: E501
+
+'abcdefghijklmnopqrstuvwxyz':r"""
+                      _                 ╮
+ __╮ |_   _   _|  _  /_  _, |_  °  ° ╮, | ,  ,  _   _  ,_   _,  ,_  _ _|_             ╮,    _
+(_/| |_) (_, (_| (/, |  (_| | | |  | |\ | |\/| | | (_) |_) (_|  |  _\  |  (_| \/ |/\| /\ |/ /_
+                        ._/       /                    j     |,                          /
 """,
 ',.!"_-':r"""
-    . ||         
+    . ||
     |         ___
-    !    ____    
-/ ° °            
+    !    ____
+/ ° °
 """,
 }
 
+huge_font = { # height == 4 (caps) 6 total
+'ABCDEFGHIJKLMNOP':r"""
+          ____      ____   ____     _____   _____    ____   __    __ ____   ____ __  __  __     __      __  __    _   ____   _____
+   /\    ||   \\   //   ` ||   \\  ||    ` ||    `  //   `  ||    ||  ||     ||  ||  /   ||     |\\    /||  |\\   |  //  \\  ||   \\
+  / \\   ||___//  ||      ||    || ||___   ||___   ||   ___ ||____||  ||     ||  || /    ||     | \\  / ||  | \\  | ||    || ||___//
+ /___\\  ||    \\ ||      ||    || ||      ||      ||    || ||    ||  ||     ||  ||/\\   ||     |  \\/  ||  |  \\ | ||    || ||
+/     \\ ||____//  \\___/ ||___//  ||____, ||       \\___/| ||    || _||_ \__//  ||  \\, ||___, |       ||  |   \\|  \\__//  ||
+""",  # noqa: E501
+
+'QRSTUVWXYZ':r"""
+  ____    _____     _____   ________  __     _  __     _ __   __     _ ___  __ __    __  _____
+ //  \\   ||   \\  //    ` '   ||   ' ||     |  \\     / \\   \\     /  \\  /   \\   /  '   //
+||    ||  ||___//  \\___       ||     ||     |   \\   /   \\   \\   /    \\/     \\ /      //
+||    ||  || \\         \\     ||     ||     |    \\ /     \\ / \\ /     /\\      ||      //
+ \\__//   ||  \\,  \____//    _||_     \\___/      \/       \/   \/    _/  \\_   _||_    //___,
+  '  \\_,
+""",
+
+'1234567890':r"""
+ __   _____    ___             _____,    ___    _______   ___      ____     _____
+/||  /    \\ //   \\    /||   ||       //   `  |-----//  //  \\   //  \\   //   \\
+ ||       //      //   / ||   ||___   ||____        //  ||    || ||    || ||   / ||
+ ||     //      -<(   /  ||   |/   \\ ||   \\      //    ))><((   \\__/|| ||  /  ||
+ ||   //          \\ /___||_,      || ||    ||    //    ||    ||       |/ || /   ||
+_||_ ||____, \\___//    _||_  \\___//  \\__//     ||     \\__//   .____/   \\___//
+""",
+
+'abcdefghijklmnopqrstuvwxyz':r"""
+
+ __    ╮            ╮        __       ╮     °     ° ╮    ╮                                              ╮
+ __\   |__   __   __|   __  /__`  __, |__   ╮     ╮ | /  |    _  _      __    __   ╮__   __,  ╮_   __  _|_                               ___
+/   |  |  \ /  ` /  |  /__) |    /  | |  \  |     | |/   |  ╮/ |/ |   ╮/  |  /  \  |  \ /  |  | ` (__`  |  ╮  ╮  \  / \ \  / \_/   \  /  __/
+\__/|, |__/ \__, \__|, \__, |    \__| |  |, |,    | | \, |, |     |,  |   |, \__/  |__/ \__|  |   .__)  |, \__|,  \/   \/\/  / \,   \/  /__,
+                            /    .__/           ._/      `                        .|       |,                                     ._/
+""", # noqa: W605, E501
+
+',.!"_-':r"""
+
+    | ||
+    |
+    |          ___
+    '    _____
+/ ° o
+""",
+"'?()|[]{}":r"""
+    ___    // \\  || ,== ==.  ,/= =\.
+|  /   \  //   \\ || ||   ||  ||   ||
+       /  ||   || || ||   || //     \\
+     /    ||   || || ||   || \\     //
+     '    \\   // || ||   ||  ||   ||
+     o     \\ //  || `== =='  `\= =/'
+""",
+}
 
 
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -159,6 +213,16 @@ class BigFont:
         self.chars[char] = BigChar(lines)
 
 
+    @staticmethod
+    def _ensure_equal_lenth(lines:list[str]) -> list[str]:
+        """Make all input lines the same length"""
+        # find the largest len
+        full_len = len(max(lines, key=len))
+        for idx, line in enumerate(lines):
+            lines[idx] += ' ' * (full_len - len(line))
+        return lines
+
+
     def bulk_add_chars(self, chars:str, lines:list[str]):
         """Add multiple chars at once.
 
@@ -169,7 +233,8 @@ class BigFont:
             A list of strings containing matching multiline characters, separated by spaces.
         """
         # add a space to each line, to make finding the final char easier
-        lines = [line + " " for line in lines]
+        lines = [line + ' ' for line in lines]
+        lines = self._ensure_equal_lenth(lines)
         # iterate over each char
         for char in chars:
             idx = 0
@@ -191,11 +256,6 @@ class BigFont:
         self._set_height()
 
 
-# process font chars
-font = BigFont()
-for key, val in raw_font.items():
-    lines = val.splitlines()[1:] # first line is an empty newline, and doesn't count
-    font.bulk_add_chars(key, lines)
 
 
 
@@ -208,40 +268,125 @@ for key, val in raw_font.items():
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 # |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("text", help="The text to use in the banner")
-    parser.add_argument("-w", "--width", help="The width of the banner", type=int, default=100)
-    parser.add_argument("--title_case", help="enable title case", action="store_true")
-    parser.add_argument("--plain_case", help="Dont modify the case from the input.", action="store_true")
-    parser.add_argument("-H", "--h_char", help="Char to use for the horizontal bars", default="~")
-    parser.add_argument("-v", "--v_char", help="Char to use for the vertical bars", default="|")
-    parser.add_argument("--no_comment", help='disable "#" at the start of the lines', action="store_true")
+def setup_font(chosen_font:dict) -> BigFont:
+    """Create and return the chosen font"""
+    # process font chars
+    font = BigFont()
+    for key, val in chosen_font.items():
+        lines = val.splitlines()[1:] # first line is an empty newline, and doesn't count
+        font.bulk_add_chars(key, lines)
+    return font
 
+
+def setup_generator_args() -> dict:
+    """Get banner settings from input args"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('text', help='The text to use in the banner', nargs='+')
+    parser.add_argument(
+        '--style',
+        help='Choose a baseline style for the banner ("important", "big", "small")',
+        default='big',
+        )
+    parser.add_argument('-w', '--width', help='The total width of the banner', type=int, default=100)
+    parser.add_argument('--title_case', help='enable title case in the big text', action='store_true')
+    parser.add_argument('--plain_case', help='Dont modify the case from the input.', action='store_true')
+    parser.add_argument('--caps_case', help='Convert big text to all caps.', action='store_true')
+    parser.add_argument('--no_space_subtitle', help='Remove spaces from the subtitle text.', action='store_true')
+    parser.add_argument('--trim_blank', help='Delete any empty lines before finishing', action='store_true')
+    parser.add_argument('--h_char', help='Char to use for the horizontal bars')
+    parser.add_argument('--v_char', help='Char to use for the vertical bars')
+    parser.add_argument('--no_comment', help='disable "#" at the start of the lines', action='store_true')
     args = parser.parse_args()
 
-    width = args.width
     use_comment = not args.no_comment
-    use_title = args.title_case
-    plain_case = args.plain_case
-    h_char = args.h_char
-    v_char = args.v_char
+    trim_blank = args.trim_blank
+    text = ' '.join(args.text)
+
+    style = args.style
+    match style.lower():
+        case 'xxl':
+            font = huge_font
+            big_text = text.upper()
+            sub_text = text
+            h_char = '='
+            v_char = '||'
+        case 'xl':
+            font = huge_font
+            big_text = text.title()
+            sub_text = text
+            h_char = '~'
+            v_char = '|'
+        case 'l':
+            font = big_font
+            big_text = text.upper()
+            sub_text = text
+            h_char = '-'
+            v_char = ':'
+        case 'm':
+            font = big_font
+            big_text = text.title()
+            sub_text = ''
+            h_char = ' '
+            v_char = ' '
+            trim_blank = True
+        case _:
+            all_styles = ('xxl', 'xl', 'l', 'm')
+            msg = f'Style should be one of {all_styles} (got {style})'
+            raise ValueError(msg)
+
+    # override style defaults with specific options
+    # override banner chars
+    if args.h_char:
+        h_char = args.h_char
+    if args.v_char:
+        v_char = args.v_char
+    # override text style
+    if args.title_case:
+        big_text = big_text.title()
+    elif args.caps_case:
+        big_text = big_text.upper()
+    elif args.plain_case:
+        big_text = text
 
     # make room for added comment and left/right bars
-    width -= 4 if use_comment else 2
+    total_width = width = args.width
+    if use_comment:
+        width -= 2
+    width -= len(v_char) * 2
 
-    text = args.text
-    if use_title:
-        text = text.title()
-    elif not plain_case:
-        text = text.upper()
+    return {
+        'font':font,
+        'big_text':big_text,
+        'sub_text':sub_text,
+        'h_char':h_char,
+        'v_char':v_char,
+        'total_width':total_width,
+        'width':width,
+        'use_comment':use_comment,
+        'trim_blank':trim_blank,
+    }
 
-    big_line = font.render_text(text)
+
+def make_banner():
+    """Make a giant banner from given args"""
+    args = setup_generator_args()
+    font = setup_font(args['font'])
+    big_text = args['big_text']
+    sub_text = args['sub_text']
+    width = args['width']
+    h_char = args['h_char']
+    v_char = args['v_char']
+    width = args['width']
+    trim_blank = args['trim_blank']
+    use_comment = args['use_comment']
+
+    big_line = font.render_text(big_text)
     # account for lines too long
     if len(big_line[0]) > width:
-        big_line = font.render_text(text, char_sep="")
+        big_line = font.render_text(big_text, char_sep='')
     if len(big_line[0]) > width:
-        big_line = font.render_text(text, char_sep="", wide_space=1)
+        big_line = font.render_text(big_text, char_sep='', wide_space=1)
 
     big_line = big_line.splitlines()
     # pad big line on left/right
@@ -249,25 +394,35 @@ if __name__ == "__main__":
     additional_width = width - line_len
     additional_right = additional_width // 2
     additional_left = additional_width - additional_right
-    big_line = [(" " * additional_left) + line + (" " * additional_right) for line in big_line]
+    big_line = [(' ' * additional_left) + line + (' ' * additional_right) for line in big_line]
 
 
     # add horizontal lines to top and bottom
     hline = (h_char * width)
 
     # add searchable annotation below
-    small_text = " " + args.text + " "
-    additional_width = width - len(small_text)
+    sub_text = ' ' + sub_text + ' '
+    additional_width = width - len(sub_text)
     additional_right = additional_width // 2
     additional_left = additional_width - additional_right
-    small_text = h_char * additional_left + small_text + h_char * additional_right
+    sub_text = h_char * additional_left + sub_text + h_char * additional_right
 
-    big_line = [hline, *big_line, hline, small_text, hline]
+    big_line = [hline, *big_line, hline, sub_text, hline]
 
 
     # add left/right bars
     big_line = [v_char + line + v_char for line in big_line]
-    if use_comment:
-        big_line = ["# " + line for line in big_line]
 
-    print("\n".join(big_line))
+
+    # remove any completely blank lines
+    if trim_blank:
+        big_line = [line for line in big_line if not line.isspace()]
+
+    if use_comment:
+        big_line = ['# ' + line for line in big_line]
+
+    print('\n'.join(big_line))
+
+
+if __name__ == '__main__':
+    make_banner()
