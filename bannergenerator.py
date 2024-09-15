@@ -172,7 +172,15 @@ class BigFont:
         self.chars[key] = val
 
 
-    def render_text(self, text:str, *, char_sep:str=' ', wide_space:int=2, clean_empty:bool=False) -> str:
+    def render_text(
+            self,
+            text: str,
+            *,
+            char_sep: str = ' ',
+            wide_space: int = 2,
+            clean_empty: bool = False,
+            add_underline: bool = False,
+            ) -> str:
         """Convert a given string into a multiline "BigChar" string.
 
         Args:
@@ -186,6 +194,8 @@ class BigFont:
             The number of times to repeat spaces in the output text.
         - clean_empty:
             Whether or not to remove empty first/last lines before returning.
+        - add_underline:
+            Whether or not to add an additional underline to the text.
         """
         if wide_space > 1:
             text = text.replace(' ', ' ' * wide_space)
@@ -208,6 +218,9 @@ class BigFont:
                 big_line.pop(0)
             if big_line[-1].isspace():
                 big_line.pop(-1)
+        if add_underline:
+            total_len = len(max(big_line, key=len))
+            big_line.append('~' * total_len)
         return big_line
 
 
@@ -340,6 +353,7 @@ def setup_generator_args() -> dict:
     #                       /  `  _   _  /_ °  _,     ,_  _      (__` _|_    |  _
     #                       \__, (_) | | |  | (_| (_| |  (/,     .__)  |  |/ | (/,
     #                                         ._/                         /
+    add_underline = False
     style = args.style
     match style.lower():
         case 'xxl':
@@ -367,6 +381,7 @@ def setup_generator_args() -> dict:
             h_char = ' '
             v_char = ' '
             trim_blank = True
+            add_underline = True
         case _:
             all_styles = ('xxl', 'xl', 'l', 'm')
             msg = f'Style should be one of {all_styles} (got {style})'
@@ -402,6 +417,7 @@ def setup_generator_args() -> dict:
         'width':width,
         'use_comment':use_comment,
         'trim_blank':trim_blank,
+        'add_underline':add_underline,
     }
 
 
@@ -427,17 +443,18 @@ def make_banner():
     width = args['width']
     trim_blank = args['trim_blank']
     use_comment = args['use_comment']
+    add_underline = args['add_underline']
 
     #                           _
     #                          /_\   _|  °      _ _|_     | . | °  _| _|_ |_
     #                         /   \ (_|  | (_| _\  |      |/ \| | (_|  |  | |
     #                                   /
-    big_line = font.render_text(big_text)
+    big_line = font.render_text(big_text, add_underline=add_underline)
     # account for lines too long
     if len(big_line[0]) > width:
-        big_line = font.render_text(big_text, char_sep='')
+        big_line = font.render_text(big_text, char_sep='', add_underline=add_underline)
     if len(big_line[0]) > width:
-        big_line = font.render_text(big_text, char_sep='', wide_space=1)
+        big_line = font.render_text(big_text, char_sep='', wide_space=1, add_underline=add_underline)
     if len(big_line[0]) > width:
         # try splitting the lines
         split_text = big_text.split()
@@ -446,7 +463,13 @@ def make_banner():
             """Make a multi-line big_line"""
             big_line = []
             for word in words:
-                big_line += font.render_text(word, char_sep=char_sep, wide_space=1, clean_empty=True)
+                big_line += font.render_text(
+                    word,
+                    char_sep=char_sep,
+                    wide_space=1,
+                    clean_empty=True,
+                    add_underline=add_underline,
+                    )
             return big_line
 
         big_line = multi_big_line(split_text, ' ')
